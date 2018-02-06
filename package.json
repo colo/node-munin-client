@@ -1,0 +1,27 @@
+{
+  "name": "munin-client",
+  "version": "0.0.1",
+  "description": "Munin Client",
+  "url": "http://github.com/colo/node-munin-client",
+  "author": {
+    "name": "Luciano Bueno",
+    "email": "glamero@gmail.com"
+  },
+  "engines": {
+    "node": ">= 0.4.8"
+  },
+  "dependencies": {
+    "mootools": "^1.5.2"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "keywords": [
+    "munin"
+  ]
+}
