@@ -1,5 +1,5 @@
 {
-  "name": "munin-client",
+  "name": "node-munin-client",
   "version": "0.0.1",
   "description": "Munin Client",
   "url": "http://github.com/colo/node-munin-client",
