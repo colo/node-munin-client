@@ -33,6 +33,9 @@ module.exports = new Class({
 	options : {
 		host: '127.0.0.1',
 		port: 4949,
+		cap: {
+			multigraph: true
+		},
 		//buffer: {
 			//size: 5,
 		//}
@@ -61,22 +64,27 @@ module.exports = new Class({
 					this.options.port,
 					this.options.host,
 					function() { //'connect' listener
+						if(method === 'list' && this.options.cap.multigraph === true){
+							client.write('cap multigraph\n');
+						}
 						client.write(method+arg+'\n');
-					}
+					}.bind(this)
 				);
 
 
 
 				let result = '';
+				let multi = /^cap\b.*/
 				client.on('data', function (data) {
 
 					data.toString().split('\n').forEach(function (str) {
 						// ignore empty lines, BANNER and '.' (end of some commands)
-						if (str !== "" && str.charAt(0) != '#' && str != '.') {
+						if (str !== "" && str.charAt(0) != '#' && str != '.' && (this.options.cap.multigraph !== true || !multi.test(str))) {
 							result +=str+'\n';
 						}
 
 					}.bind(this));
+
 
 					client.end();
 				}.bind(this));
