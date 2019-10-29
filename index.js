@@ -120,6 +120,10 @@ module.exports = new Class({
 		data = data.trim();
 
 		let result = {}
+		let multigraph_key
+		let tmp_result = {}
+
+
 		let lines = ''
 
 		switch (cmd) {
@@ -145,6 +149,7 @@ module.exports = new Class({
 					//console.log('data', data);
 					// let result = {};
 					lines = data.split('\n');
+					multigraph_key = undefined
 
 					Array.each(lines, function(line){
 						let space = line.indexOf(' ');
@@ -154,27 +159,64 @@ module.exports = new Class({
 							value *= 1
 
 						let keys = [];
-						if(title.indexOf('.') >= 0){
+						if(title.indexOf('.') > -1){
 							keys = title.split('.', 2);
 						}
-						else if(title.indexOf('_') >= 0){
+						else if(title.indexOf('_') > -1){
 							keys = title.split('_', 2);
 						}
 						else{
 							keys[0] = title;
 						}
 
-						if(!result[keys[0]])
-							result[keys[0]] = {};
 
-						if(keys.length == 1){
-							result[keys[0]] = value;
+						if(keys[0] === 'multigraph'){
+							// console.log('---->' + keys[1])
+							// console.log('---->' + value)
+							// process.exit(1)
+
+
+							multigraph_key = value
+
+							if(!tmp_result['multigraph']) tmp_result['multigraph'] = {}
+
+							tmp_result['multigraph'][value] = {}
+						}
+						else if(multigraph_key){
+							// tmp_result[multigraph_key][name] = parts[1];
+
+							if(!tmp_result['multigraph'][multigraph_key][keys[0]])
+								tmp_result['multigraph'][multigraph_key][keys[0]] = {};
+
+							if(keys.length == 1){
+								tmp_result['multigraph'][multigraph_key][keys[0]] = value;
+							}
+							else{
+								tmp_result['multigraph'][multigraph_key][keys[0]][keys[1]] = value;
+							}
+
 						}
 						else{
-							result[keys[0]][keys[1]] = value;
+
+							if(!result[keys[0]])
+								result[keys[0]] = {};
+
+							if(keys.length == 1){
+								result[keys[0]] = value;
+							}
+							else{
+								result[keys[0]][keys[1]] = value;
+							}
+
 						}
 
+
+
 					});
+
+					if(Object.getLength(tmp_result) > 0){
+						result = tmp_result
+					}
 
 					callback(null, result);
 
@@ -184,6 +226,7 @@ module.exports = new Class({
 					//console.log('data', data);
 					// let result = {};
 					lines = data.split('\n');
+					multigraph_key = undefined
 
 					Array.each(lines, function(line){
 						let parts = line.split(' ');
@@ -201,8 +244,23 @@ module.exports = new Class({
 						if(!isNaN(parts[1] * 1))
 							parts[1] *= 1
 
-						result[name] = parts[1];
+						if(name === 'multigraph'){
+							multigraph_key = parts[1]
+							if(!tmp_result['multigraph']) tmp_result['multigraph'] = {}
+
+							tmp_result['multigraph'][parts[1]] = {}
+						}
+						else if(multigraph_key){
+							tmp_result['multigraph'][multigraph_key][name] = parts[1];
+						}
+						else{
+							result[name] = parts[1];
+						}
 					});
+
+					if(Object.getLength(tmp_result) > 0){
+						result = tmp_result
+					}
 
 					debug_internals('fetch', result)
 
