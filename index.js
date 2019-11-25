@@ -169,6 +169,14 @@ module.exports = new Class({
 							keys[0] = title;
 						}
 
+						/**
+						* result: { graph: { args: '--base 1024 -l 0 --upper-limit 4143013888', vlabel: 'Bytes', title: 'Memory usage', category: 'system', info: 'This graph shows what the machine uses memory for.', order: 'apps page_tables swap_cache slab cached buffers free swap ' }, apps: { label: 'apps', draw: 'AREA', info: 'Memory used by user-space applications.' }, buffers: { label: 'buffers', draw: 'STACK', info: 'Block device (e.g. harddisk) cache. Also where "dirty" blocks are stored until written.' }, swap: { label: 'swap', draw: 'STACK', info: 'Swap space used.' }, cached: { label: 'cache', draw: 'STACK', info: 'Parked file data (file content) cache.' }, free: { label: 'unused', draw: 'STACK', info: 'Wasted memory. Memory that is not used for anything at all.' }, slab: { label: 'slab_cache', draw: 'STACK', info: 'Memory used by the kernel (major users  are caches like inode, dentry, etc).' }, swap_cache: { label: 'swap_cache', draw: 'STACK', info: 'A piece of memory that keeps track of pages that have been fetched from swap but not yet been modified.' }, page_tables: { label: 'page_tables', draw: 'STACK', info: 'Memory used to map between virtual and physical memory addresses.' }, vmalloc_used: { label: 'vmalloc_used', draw: 'LINE2', info: '\'VMalloc\' (kernel) memory used' }, committed: { label: 'committed', draw: 'LINE2', info: 'The amount of memory allocated to programs. Overcommitting is normal, but may indicate memory leaks.' }, mapped: { label: 'mapped', draw: 'LINE2', info: 'All mmap()ed pages.' }, '': 'active' }
+						* keys: [ '', 'label' ]
+						* value: 'active'
+						* fix this error, keys shouldn't be empty strings
+						**/
+						keys = keys.erase('')
+						keys = keys.clean()
 
 						if(keys[0] === 'multigraph'){
 							// console.log('---->' + keys[1])
@@ -206,9 +214,7 @@ module.exports = new Class({
 							}
 							else{
 								debug_internals('error %o %o %o', result, keys, value)
-								/**
-								{ graph: { args: '--base 1024 -l 0 --upper-limit 4143013888', vlabel: 'Bytes', title: 'Memory usage', category: 'system', info: 'This graph shows what the machine uses memory for.', order: 'apps page_tables swap_cache slab cached buffers free swap ' }, apps: { label: 'apps', draw: 'AREA', info: 'Memory used by user-space applications.' }, buffers: { label: 'buffers', draw: 'STACK', info: 'Block device (e.g. harddisk) cache. Also where "dirty" blocks are stored until written.' }, swap: { label: 'swap', draw: 'STACK', info: 'Swap space used.' }, cached: { label: 'cache', draw: 'STACK', info: 'Parked file data (file content) cache.' }, free: { label: 'unused', draw: 'STACK', info: 'Wasted memory. Memory that is not used for anything at all.' }, slab: { label: 'slab_cache', draw: 'STACK', info: 'Memory used by the kernel (major users  are caches like inode, dentry, etc).' }, swap_cache: { label: 'swap_cache', draw: 'STACK', info: 'A piece of memory that keeps track of pages that have been fetched from swap but not yet been modified.' }, page_tables: { label: 'page_tables', draw: 'STACK', info: 'Memory used to map between virtual and physical memory addresses.' }, vmalloc_used: { label: 'vmalloc_used', draw: 'LINE2', info: '\'VMalloc\' (kernel) memory used' }, committed: { label: 'committed', draw: 'LINE2', info: 'The amount of memory allocated to programs. Overcommitting is normal, but may indicate memory leaks.' }, mapped: { label: 'mapped', draw: 'LINE2', info: 'All mmap()ed pages.' }, '': 'active' } [ '', 'label' ] 'active'
-								**/
+
 								result[keys[0]][keys[1]] = value;
 							}
 
